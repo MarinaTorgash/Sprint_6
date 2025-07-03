@@ -1,5 +1,22 @@
 import pytest
 
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+
+@pytest.fixture
+def fDriver():
+    options = FirefoxOptions()
+    options.add_argument("--headless")  # Уберите, если хотите видеть браузер
+    fDriver = webdriver.Firefox(options=options)
+
+    # Открыть окно на весь экран
+    fDriver.maximize_window()  # 🔥 Здесь ключевая строка
+
+    yield fDriver
+    fDriver.quit()
+
+
 @pytest.fixture
 def important_questions():
     questions_data = [

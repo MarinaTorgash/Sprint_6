@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
 
-class mainPageLocators:
+class MainPageLocators:
 
     FAQ_SECTION = (By.XPATH, "//div[@class='accordion']")
     QUESTION_ITEMS = (By.CSS_SELECTOR, "div.accordion__item")
@@ -28,24 +28,25 @@ class mainPageLocators:
 
 
 class OrderPageLocators:
-    # Форма заказа - страница 1
+    # Страница 1
     NAME_INPUT = (By.XPATH, "//input[@placeholder='* Имя']")
     LAST_NAME_INPUT = (By.XPATH, "//input[@placeholder='* Фамилия']")
     ADDRESS_INPUT = (By.XPATH, "//input[@placeholder='* Адрес: куда привезти заказ']")
-    METRO_STATION_DROPDOWN = (By.XPATH, "//input[@placeholder='* Станция метро']")
-    METRO_STATION_OPTION = (By.XPATH, "//div[contains(@class, 'select-search__select')]//button")
+    METRO_STATION_DROPDOWN = (By.CLASS_NAME, 'select-search__input')
+    METRO_STATION_OPTION = (By.XPATH, "//div[contains(@class, 'select-search__select')]//button[contains(., '{}')]")
     PHONE_INPUT = (By.XPATH, "//input[@placeholder='* Телефон: на него позвонит курьер']")
     NEXT_BUTTON = (By.XPATH, "//button[text()='Далее']")
 
-    # Форма заказа - страница 2
+    # Страница 2
     DATE_INPUT = (By.XPATH, "//input[@placeholder='* Когда привезти самокат']")
     RENTAL_PERIOD_DROPDOWN = (By.CLASS_NAME, 'Dropdown-placeholder')
     RENTAL_PERIOD_OPTION = (By.XPATH, "//div[contains(@class, 'Dropdown-option') and text()='{}']")
-    COLOR_CHECKBOX = (By.ID, '{}')  # Будет форматироваться под конкретный цвет
+    COLOR_BLACK_CHECKBOX = (By.ID, 'black')
+    COLOR_GREY_CHECKBOX = (By.ID, 'grey')
     COMMENT_INPUT = (By.XPATH, "//input[@placeholder='Комментарий для курьера']")
-    ORDER_BUTTON = (
-    By.XPATH, "//button[contains(text(), 'Заказать') and ancestor::div[contains(@class, 'Order_Buttons__')]]")
+    ORDER_BUTTON = (By.XPATH, "//div[contains(@class, 'Order_Buttons')]//button[text()='Заказать']")
 
-    # Подтверждение заказа
-    CONFIRM_BUTTON = (By.XPATH, "//button[text()='Да']")
-    SUCCESS_MESSAGE = (By.XPATH, "//div[contains(text(), 'Заказ оформлен')]")
+    # Модальное окно подтверждения
+    CONFIRM_BUTTON = (By.XPATH, "//button[text()='Да' and contains(@class, 'Button_Middle')]")
+    SUCCESS_MESSAGE = (By.XPATH, "//div[contains(@class, 'Order_ModalHeader') and contains(., 'Заказ оформлен')]")
+    ORDER_NUMBER = (By.XPATH, "//div[contains(@class, 'Order_Text')]")
