@@ -1,32 +1,6 @@
 from selenium.webdriver.common.by import By
 
 
-class MainPageLocators:
-
-    FAQ_SECTION = (By.XPATH, "//div[@class='accordion']")
-    QUESTION_ITEMS = (By.CSS_SELECTOR, "div.accordion__item")
-
-    @staticmethod
-    def question_button(index):
-        return (By.ID, f"accordion__heading-{index}")
-
-    @staticmethod
-    def answer_text(index):
-        return (By.ID, f"accordion__panel-{index}")
-
-
-    ACCORDION_ITEM = (By.CSS_SELECTOR, '[data-accordion-component="AccordionItem"]')
-    ACCORDION_HEADER = (By.CLASS_NAME, 'accordion__button')
-    ACCORDION_PANEL = (By.CLASS_NAME, 'accordion__panel')
-    COOKIE_BANNER = (By.ID, 'rcc-confirm-button')
-
-    # Точки входа для заказа
-    TOP_ORDER_BUTTON = (
-    By.XPATH, "//button[contains(text(), 'Заказать') and ancestor::div[@class='Header_Nav__AGCXC']]")
-    BOTTOM_ORDER_BUTTON = (
-    By.XPATH, "//button[contains(text(), 'Заказать') and ancestor::div[contains(@class, 'Home_FinishButton__')]]")
-
-
 class OrderPageLocators:
     # Страница 1
     NAME_INPUT = (By.XPATH, "//input[@placeholder='* Имя']")
@@ -37,7 +11,7 @@ class OrderPageLocators:
     PHONE_INPUT = (By.XPATH, "//input[@placeholder='* Телефон: на него позвонит курьер']")
     NEXT_BUTTON = (By.XPATH, "//button[text()='Далее']")
 
-    # Страница 2
+    # Страница "Про аренду"
     DATE_INPUT = (By.XPATH, "//input[@placeholder='* Когда привезти самокат']")
     RENTAL_PERIOD_DROPDOWN = (By.CLASS_NAME, 'Dropdown-placeholder')
     RENTAL_PERIOD_OPTION = (By.XPATH, "//div[contains(@class, 'Dropdown-option') and text()='{}']")

@@ -1,51 +1,50 @@
 import pytest
-import time
 from selenium import webdriver
-from selenium.common import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
-
 from pages.questions_page import MainPage
 from urls import Urls
 from data import QUESTIONS_DATA
+import allure
 
 class TestQuestionsPage:
     driver = None
 
     @classmethod
     def setup_class(cls):
-        cls.driver = webdriver.Firefox()
+        with allure.step('Открываем браузер Firefox'):
+            cls.driver = webdriver.Firefox()
 
+    @allure.description('При нажатии на стрелочку открывается соответствующий текст')
     @pytest.mark.parametrize('index, expected_text', QUESTIONS_DATA)
     def test_accordion_item(self, index, expected_text):
-        page = MainPage(self.driver, Urls.MAIN_PAGE)
+        allure.dynamic.title(f'Проверка вопроса №{index+1} в разделе «Вопросы о важном»')
 
-        page.open()
-        page.accept_cookies()
-        page.scroll_to_accordion()
-        #page.close_all_accordion_items()
+        with allure.step(f'1. Открываем страницу {Urls.MAIN_PAGE}'):
+            page = MainPage(self.driver, Urls.MAIN_PAGE)
+            page.open()
 
-        items = page.get_accordion_items()
-        assert index < len(items), f"Недостаточно вопросов. Всего: {len(items)}"
+        with allure.step('2. Принимаем куки'):
+            page.accept_cookies()
 
-        item = items[index]
+        with allure.step(f'3. Тестируем вопрос №{index+1}'):
+            page.scroll_to_accordion()
 
-        initial_state = item.is_panel_open()
+            items = page.get_accordion_items()
+            assert index < len(items), f"Недостаточно вопросов. Всего: {len(items)}"
 
-        # Кликаем на вопрос
-        item.click_header()
+            item = items[index]
+            item.click_header()
 
-        # Проверяем текст, если панель открылась
-        if item.is_panel_open():
-            actual_text = item.get_panel_text()
-            assert actual_text == expected_text, (
-                f"Неверный текст в элементе {index}:\n"
-                f"Ожидалось: '{expected_text}'\n"
-                f"Получено: '{actual_text}'"
-            )
-        else:
-            pytest.fail(f"Панель не открылась после клика на элемент {index}")
-
+            if item.is_panel_open():
+                actual_text = item.get_panel_text()
+                assert actual_text == expected_text, (
+                    f"Неверный текст в элементе {index}:\n"
+                    f"Ожидалось: '{expected_text}'\n"
+                    f"Получено: '{actual_text}'"
+                )
+            else:
+                pytest.fail(f"Панель не открылась после клика на элемент {index}")
 
     @classmethod
     def teardown_class(cls):
-        cls.driver.quit()
+        with allure.step('Закрываем браузер'):
+            cls.driver.quit()

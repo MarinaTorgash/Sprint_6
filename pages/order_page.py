@@ -1,10 +1,10 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from locators import OrderPageLocators
-from locators import MainPageLocators
+from selenium.webdriver.common.by import By
+from locators.main_page_locators import MainPageLocators
+from locators.order_page_locators import OrderPageLocators
 import time
-
 
 class OrderPage:
     def __init__(self, driver):
@@ -75,6 +75,9 @@ class OrderPage:
         # Заполняем дату
         self._fill_field(OrderPageLocators.DATE_INPUT, data['date'])
 
+        # Закрываем календарь даты, если он открыт
+        self._close_date_picker()
+
         # Выбираем срок аренды
         self._select_rental_period(data['rental_period'])
 
@@ -83,6 +86,11 @@ class OrderPage:
 
         # Заполняем комментарий
         self._fill_field(OrderPageLocators.COMMENT_INPUT, data['comment'])
+
+    def _close_date_picker(self):
+        """Закрывает календарь выбора даты"""
+        header = self.driver.find_element(By.TAG_NAME, 'body')
+        header.click()
 
     def _select_rental_period(self, period):
         """Выбор срока аренды"""
