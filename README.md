@@ -10,14 +10,17 @@
 main_page_locators.py - локаторы главной страницы
 order_page_locators.py - локаторы оформления заказа
 
-questions_page - Page Object для проверки раздела «Вопросы о важном»
-order_page - Page Object для проверки «Заказ самоката»
+questions_page.py - Page Object для проверки раздела «Вопросы о важном»
+order_page.py - Page Object для проверки «Заказ самоката»
+base_page.py - Page Object базовый класс для всех страниц
 
-test_order - UI-проверка заказа самоката
-test_questions_page - UI-проверка раздела «Вопросы о важном» на главной странице
+test_order.py - UI-проверка заказа самоката
+test_questions_page.py - UI-проверка раздела «Вопросы о важном» на главной странице
 
 data.py - данные ответов раздела «Вопросы о важном» и данные для оформления заказа 
 
 urls.py - страницы сайта 
+
+conftest.py - фикстуры
 
 

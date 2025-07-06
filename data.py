@@ -32,3 +32,7 @@ ORDER_DATA = [
         'comment': 'Оставить у подъезда'
     }
 ]
+EXPECTED_SUCCESS_MESSAGE = "Заказ оформлен"
+
+ERROR_MESSAGE_NO_SUCCESS_POPUP = "Сообщение об успешном заказе не появилось"
+ERROR_MESSAGE_WRONG_SUCCESS_TEXT = "Неверное сообщение об успешном заказе"

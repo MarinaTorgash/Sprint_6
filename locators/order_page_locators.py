@@ -21,6 +21,11 @@ class OrderPageLocators:
     ORDER_BUTTON = (By.XPATH, "//div[contains(@class, 'Order_Buttons')]//button[text()='Заказать']")
 
     # Модальное окно подтверждения
-    CONFIRM_BUTTON = (By.XPATH, "//button[text()='Да' and contains(@class, 'Button_Middle')]")
+    CONFIRM_BUTTON = (By.XPATH, '//button[text()="Да"]')
     SUCCESS_MESSAGE = (By.XPATH, "//div[contains(@class, 'Order_ModalHeader') and contains(., 'Заказ оформлен')]")
     ORDER_NUMBER = (By.XPATH, "//div[contains(@class, 'Order_Text')]")
+
+    ORDER_FORM_HEADER = (By.XPATH, '//div[text()="Для кого самокат"]')
+
+
+    FAQ_SECTION = (By.CLASS_NAME, 'Home_FAQ__3uVm4')

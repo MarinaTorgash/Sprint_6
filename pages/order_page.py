@@ -2,31 +2,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from locators.main_page_locators import MainPageLocators
 from locators.order_page_locators import OrderPageLocators
-import time
+from pages.base_page import BasePage
+import allure
+from urls import Urls
 
-class OrderPage:
+class OrderPage(BasePage):
     def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 15)
+        super().__init__(driver)
+        self.locators = OrderPageLocators()
 
-    def accept_cookies(self):
-        try:
-            # Ожидаем появления и кликаем на куки-баннер
-            cookie_banner = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(MainPageLocators.COOKIE_BANNER)
-            )
-            cookie_banner.click()
-            time.sleep(0.5)  # Даем время для исчезновения баннера
-        except:
-            # Если баннер не найден, продолжаем
-            pass
+        # Открытие страницы и ожидание загрузки
+        self.open(Urls.MAIN_PAGE)
+        self.wait_for_element(self.locators.FAQ_SECTION)
 
+
+    @allure.step('Заполняем страницу "Для кого самокат"')
     def fill_first_page(self, data):
-        """Заполнение первой страницы заказа с надежными ожиданиями"""
         # Ожидаем появления формы
-        self.wait.until(EC.visibility_of_element_located(OrderPageLocators.NAME_INPUT))
+        self.wait_for_element(OrderPageLocators.NAME_INPUT)
 
         # Заполняем поля с очисткой и явными ожиданиями
         self._fill_field(OrderPageLocators.NAME_INPUT, data['name'])
@@ -38,16 +32,13 @@ class OrderPage:
         self._fill_field(OrderPageLocators.PHONE_INPUT, data['phone'])
 
     def _fill_field(self, locator, value):
-        """Универсальный метод заполнения поля с очисткой и ожиданиями"""
-        field = self.wait.until(EC.element_to_be_clickable(locator))
+        field = self.wait_for_clickable_element(locator)
         field.click()
         field.clear()
         field.send_keys(value)
-        time.sleep(0.2)  # Небольшая задержка для стабилизации
 
     def _select_metro_station(self, station_name):
-        """Выбор станции метро с защитой от перекрытия"""
-        dropdown = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.METRO_STATION_DROPDOWN))
+        dropdown = self.wait_for_clickable_element(OrderPageLocators.METRO_STATION_DROPDOWN)
         dropdown.click()
 
         # Формируем локатор для конкретной станции
@@ -55,23 +46,22 @@ class OrderPage:
                            OrderPageLocators.METRO_STATION_OPTION[1].format(station_name))
 
         # Прокручиваем к элементу и кликаем
-        station = self.wait.until(EC.visibility_of_element_located(station_locator))
+        station = self.wait_for_element(station_locator)
         self.driver.execute_script("arguments[0].scrollIntoView();", station)
 
         # Используем ActionChains для надежного клика
         ActionChains(self.driver).move_to_element(station).pause(0.5).click().perform()
 
+    @allure.step('Нажимаем кнопку "Далее" и переходим на страницу "Про аренду"')
     def go_to_second_page(self):
-        """Переход на вторую страницу с проверкой"""
-        next_button = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.NEXT_BUTTON))
+        next_button = self.wait_for_clickable_element(OrderPageLocators.NEXT_BUTTON)
         next_button.click()
 
         # Ждем появления элементов второй страницы
-        self.wait.until(EC.visibility_of_element_located(OrderPageLocators.DATE_INPUT))
-        time.sleep(0.5)  # Дополнительная задержка для стабилизации
+        self.wait_for_element(OrderPageLocators.DATE_INPUT)
 
+    @allure.step('Заполняем страницу "Про аренду"')
     def fill_second_page(self, data):
-        """Заполнение второй страницы заказа"""
         # Заполняем дату
         self._fill_field(OrderPageLocators.DATE_INPUT, data['date'])
 
@@ -88,13 +78,11 @@ class OrderPage:
         self._fill_field(OrderPageLocators.COMMENT_INPUT, data['comment'])
 
     def _close_date_picker(self):
-        """Закрывает календарь выбора даты"""
         header = self.driver.find_element(By.TAG_NAME, 'body')
         header.click()
 
     def _select_rental_period(self, period):
-        """Выбор срока аренды"""
-        dropdown = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.RENTAL_PERIOD_DROPDOWN))
+        dropdown = self.wait_for_clickable_element(OrderPageLocators.RENTAL_PERIOD_DROPDOWN)
         dropdown.click()
 
         # Формируем локатор для конкретного периода
@@ -102,44 +90,43 @@ class OrderPage:
                           OrderPageLocators.RENTAL_PERIOD_OPTION[1].format(period))
 
         # Ждем и кликаем
-        period_option = self.wait.until(EC.element_to_be_clickable(period_locator))
+        period_option = self.wait_for_clickable_element(period_locator)
         period_option.click()
 
     def _select_color(self, color):
-        """Выбор цвета самоката"""
         color_locator = OrderPageLocators.COLOR_BLACK_CHECKBOX if color == 'black' else OrderPageLocators.COLOR_GREY_CHECKBOX
-        checkbox = self.wait.until(EC.element_to_be_clickable(color_locator))
+        checkbox = self.wait_for_clickable_element(color_locator)
 
         # Если чекбокс еще не выбран, кликаем
         if not checkbox.is_selected():
             checkbox.click()
 
+    @allure.step('Нажимаем кнопку "Заказать"')
     def submit_order(self):
-        """Отправка заказа"""
-        order_button = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.ORDER_BUTTON))
+        order_button = self.wait_for_clickable_element(OrderPageLocators.ORDER_BUTTON)
 
         # Прокручиваем к кнопке для избежания перекрытия
         self.driver.execute_script("arguments[0].scrollIntoView();", order_button)
         order_button.click()
 
         # Ожидаем появления модального окна подтверждения
-        self.wait.until(EC.visibility_of_element_located(OrderPageLocators.CONFIRM_BUTTON))
+        self.wait_for_element(OrderPageLocators.CONFIRM_BUTTON)
 
+    @allure.step('Нажимаем кнопку "Да" - подтверждение заказа')
     def confirm_order(self):
-        """Подтверждение заказа"""
-        confirm_button = self.wait.until(EC.element_to_be_clickable(OrderPageLocators.CONFIRM_BUTTON))
+        confirm_button = self.wait_for_clickable_element(OrderPageLocators.CONFIRM_BUTTON)
         confirm_button.click()
 
+    @allure.step('Проверка успешного заказа')
     def get_success_message(self):
-        """Получение сообщения об успешном заказе"""
         try:
-            return self.wait.until(EC.visibility_of_element_located(OrderPageLocators.SUCCESS_MESSAGE)).text
+            return self.wait_for_element(OrderPageLocators.SUCCESS_MESSAGE).text
         except:
             return None
 
+    @allure.step('Получаем номер заказа')
     def get_order_number(self):
-        """Получение номера заказа"""
         try:
-            return self.wait.until(EC.visibility_of_element_located(OrderPageLocators.ORDER_NUMBER)).text
+            return self.wait_for_element(OrderPageLocators.ORDER_NUMBER).text
         except:
             return None

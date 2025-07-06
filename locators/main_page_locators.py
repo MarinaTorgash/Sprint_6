@@ -2,8 +2,6 @@ from selenium.webdriver.common.by import By
 
 
 class MainPageLocators:
-
-    FAQ_SECTION = (By.XPATH, "//div[@class='accordion']")
     QUESTION_ITEMS = (By.CSS_SELECTOR, "div.accordion__item")
 
     @staticmethod
@@ -18,6 +16,7 @@ class MainPageLocators:
     ACCORDION_HEADER = (By.CLASS_NAME, 'accordion__button')
     ACCORDION_PANEL = (By.CLASS_NAME, 'accordion__panel')
     COOKIE_BANNER = (By.ID, 'rcc-confirm-button')
+    FAQ_SECTION = (By.CLASS_NAME, 'Home_FAQ__3uVm4')
 
     # Точки входа для заказа
     TOP_ORDER_BUTTON = (
